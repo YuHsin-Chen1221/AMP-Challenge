@@ -194,21 +194,26 @@ v3 & $+$ AMPBench-MT data & 0.494 / 0.512$^{\dagger}$ & 0.421 / 0.459$^{\dagger}
 
 \begin{figure}[h]\centering
 \includegraphics[width=0.86\textwidth]{figures/predictor_performance.pdf}
-\caption{Predictor performance across versions v1--v3 (bar colour) on the honest homology split, at
-the \emph{challenge-category} level: the four MIC categories are strain-count-weighted means of the
-per-species Spearman $\rho$ (via the panel aggregation of \S\ref{sec:agg}), and HC50 is the safety
-endpoint. v2 is best on every category; v3 dips because its re-clustered test set is harder
-(see $\dagger$), not because the added data hurts.}
+\caption{\textbf{Fair data ablation on one fixed split.} Both arms use the \emph{identical} v3
+CD-HIT-80\% split (same held-out test); they differ only in training data --- Arm A = v2 data
+(GRAMPA+master), Arm B = v3 data (+AMPBench-MT). Bars are category-level Spearman $\rho$
+(strain-weighted per-species MIC via the panel aggregation of \S\ref{sec:agg}) plus the HC50 safety
+endpoint; green $\Delta$ = v3$-$v2. Removing the re-clustering confound, the AMPBench-MT merge
+\textbf{helps every MIC category} (+0.07 to +0.10, largest on the resistance-relevant MDR and
+Gram$+$); HC50 is unchanged ($-0.007$) because its data is identical in both arms.}
 \end{figure}
 
-$^{\dagger}$\,\textbf{v3 honest numbers are confounded by re-clustering.} Adding 16{,}821 MIC rows
-changed the global CD-HIT clustering, so the v3 honest test set differs from v2's and is harder.
-The proof: HC50's data is \emph{unchanged} between v2 and v3, yet its honest $\rho$ moved
-$0.503\!\to\!0.421$ ($-0.082$) purely from the re-split. MIC's $-0.091$ is therefore almost entirely
-the harder split, not a regression. Net: the data merge is $\rho$-neutral on the overall honest
-split while tripling-to-13$\times$-ing rare-species coverage --- a coverage gain for the
-MDR/Gram categories rather than a headline-$\rho$ gain. \textbf{v2 remains the recommended
-configuration by honest overall $\rho$}; the v3 data is retained for its rare-species coverage.
+$^{\dagger}$\,\textbf{The apparent v3 dip in Table~5 is a split artifact, not a regression.} The
+v1$\to$v3 rows are each on their \emph{own} CD-HIT split; adding 16{,}821 MIC rows re-clustered
+everything, so v3's honest test set differs from v2's and is harder. Proof: HC50's data is
+\emph{unchanged} v2$\to$v3 yet its honest $\rho$ moved $0.503\!\to\!0.421$ ($-0.082$) purely from
+the re-split. To measure the data effect cleanly we ran a \textbf{controlled ablation on one fixed
+split} (Figure~1, Table~6): same held-out test, training data $\pm$AMPBench-MT. There the merge
+\textbf{improves overall MIC $\rho$ 0.450$\to$0.494 ($+0.044$)} and the rare species by
+$+0.140$ (strain-weighted) --- \spn{A.\,baumannii} $+0.30$, \spn{E.\,faecium} $+0.25$,
+\spn{K.\,pneumoniae} $+0.11$ --- with the big-3 flat ($+0.004$). So the AMPBench-MT data
+\textbf{genuinely helps}, most where the challenge scores it (MDR/Gram), and the deployed model is
+the v2 configuration trained on the full merged corpus.
 
 \subsection{Per-species MIC (honest split)}
 
@@ -257,39 +262,41 @@ baseline --- so that a number can never be read as good without its honest refer
 \section{Panel aggregation --- species to category scores}\label{sec:agg}
 
 The predictor emits one MIC per species and one HC50; the challenge scores a 20-strain panel. The
-aggregation (\texttt{challenge/metrics/aggregate.py}) broadcasts each species' predicted MIC to the
+aggregation (\texttt{metrics/aggregate.py}) broadcasts each species' predicted MIC to the
 panel strains it represents (\texttt{PANEL\_STRAIN\_COUNTS}: \spn{E.\,coli}$\times$5,
 \spn{P.\,aeruginosa}$\times$3, \dots) and computes, per category, \textbf{Success Rate} (fraction of
 strains with MIC $\le 16$~\uM), \textbf{MIC50/MIC90} (strain-weighted percentiles), and, for
 Optimal-Selectivity, \textbf{Safety Window} $=$ HC50\,/\,MIC50 --- all with the challenge ceilings
 (MIC 64~\uM, HC50 128~\uM) applied. Categories: Broad (all 20 strains), Gram$+$ (5), Gram$-$ (15),
 MDR (the 8-strain ESKAPE subset). The same category weighting yields the category-level ranking
-$\rho$ shown in Figure~1 and Table~6, where v2 leads every category.
+$\rho$ used for the fair data ablation in Figure~1 and Table~6.
 
 \begin{table}[h]\centering\small
-\caption{Category-level ranking quality: strain-count-weighted mean of per-species MIC Spearman
-$\rho$ per challenge category (honest homology split), plus the HC50 safety endpoint, for each
-version. v2 is best on every category; v3's dip is the re-clustering artifact ($\dagger$ above).}
+\caption{Fair data ablation, category-level Spearman $\rho$ on the \emph{identical} fixed v3 split
+(same test; only training data differs). Adding AMPBench-MT lifts every MIC category, most on the
+resistance-relevant MDR and Gram$+$; HC50 is unchanged (its data is identical in both arms).}
 \begin{tabular}{@{}lccccc@{}}
 \toprule
-\textbf{Version} & \textbf{Broad} & \textbf{Gram$+$} & \textbf{Gram$-$} & \textbf{MDR} & \textbf{HC50} \\
+\textbf{Training data} & \textbf{Broad} & \textbf{Gram$+$} & \textbf{Gram$-$} & \textbf{MDR} & \textbf{HC50} \\
 \midrule
-v1 & 0.545 & 0.467 & 0.570 & 0.515 & 0.456 \\
-v2 & \textbf{0.565} & \textbf{0.474} & \textbf{0.596} & \textbf{0.547} & \textbf{0.503} \\
-v3 & 0.468 & 0.420 & 0.484 & 0.444 & 0.421 \\
+Arm A --- v2 data (GRAMPA+master) & 0.394 & 0.323 & 0.418 & 0.345 & 0.428 \\
+Arm B --- v3 data ($+$AMPBench-MT) & \textbf{0.468} & \textbf{0.420} & \textbf{0.484} & \textbf{0.444} & 0.421 \\
+$\Delta$ (B$-$A) & $+0.074$ & $+0.097$ & $+0.066$ & $+0.099$ & $-0.007$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \section{Decision and status}
 
-\textbf{Final predictor:} v2 configuration (separate mode) --- honest MIC $\rho$ 0.585 / $r$ 0.597
-(RMSE 0.65 $\log_{10}$\uM), honest HC50 $\rho$ 0.503 / $r$ 0.522 --- with the v3 AMPBench-MT data
-retained for its 3--13$\times$ rare-species coverage (valuable for the MDR ESKAPE and Gram
-categories). The censoring-aware HC50 loss was a clear win ($\rho$ $+0.047$); the rare-species
-sampling rebalance and the data merge together lift the data-starved species that the challenge's
-resistance-focused categories weigh most. A physicochemical-feature branch was diagnosed out
-(incremental $r$ $+0.015$ MIC / $\sim\!0$ HC50 --- ESM2 already subsumes the descriptors).
+\textbf{Final predictor:} the v2 configuration (separate mode; species-rebalanced sampling +
+censoring-aware HC50 loss) trained on the \textbf{full merged corpus incl. AMPBench-MT}, and shipped
+as the deployment model. Three findings drive this: (i) the censoring-aware HC50 loss is a clear win
+($\rho$ $+0.047$); (ii) the controlled data ablation (Figure~1) shows AMPBench-MT genuinely improves
+MIC ranking --- overall $+0.044$, rare species $+0.140$ --- concentrated in the MDR/Gram categories
+the challenge weights most; (iii) a physicochemical-feature branch was diagnosed out (incremental
+$r$ $+0.015$ MIC / $\sim\!0$ HC50 --- ESM2 already subsumes the descriptors). Reference honest
+metrics (held-out v2 run): MIC $\rho$ 0.585 / $r$ 0.597 (RMSE 0.65 $\log_{10}$\uM), HC50 $\rho$
+0.503 / $r$ 0.522.
 
 \textbf{Remaining work toward submission:} the fixed-seed 50{,}000 generation run (constraints as a
 generation gate), the top-100 selection under the novelty gate (ranked by the aggregated

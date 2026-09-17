@@ -1,0 +1,326 @@
+{
+  "mode": "separate",
+  "encoder_ckpt": "/out/generator_stage1_all",
+  "steps": 3000,
+  "results": {
+    "homology": {
+      "mode": "separate",
+      "mic": {
+        "final": {
+          "overall": {
+            "spearman": 0.49383421239198805,
+            "pearson": 0.512183436943213,
+            "rmse": 0.6526019945677838,
+            "mae": 0.5031452314372905,
+            "n": 4065
+          },
+          "per_group": {
+            "a. baumannii": {
+              "spearman": 0.5286692649295128,
+              "pearson": 0.5531251859151541,
+              "rmse": 0.5191838324101182,
+              "mae": 0.4144512757164845,
+              "n": 157
+            },
+            "b. subtilis": {
+              "spearman": 0.569576012435008,
+              "pearson": 0.5842939681341133,
+              "rmse": 0.5721730510251655,
+              "mae": 0.43362334991643736,
+              "n": 338
+            },
+            "e. cloacae": {
+              "spearman": 0.2773455283977489,
+              "pearson": 0.2834358130488654,
+              "rmse": 0.6679205861575446,
+              "mae": 0.5295969689233233,
+              "n": 68
+            },
+            "e. coli": {
+              "spearman": 0.442752340647633,
+              "pearson": 0.45094183332663385,
+              "rmse": 0.7039621721745097,
+              "mae": 0.541705440887437,
+              "n": 1142
+            },
+            "e. faecalis": {
+              "spearman": 0.33123932022590014,
+              "pearson": 0.29910166108283825,
+              "rmse": 0.7590331674676325,
+              "mae": 0.5651936354569723,
+              "n": 165
+            },
+            "e. faecium": {
+              "spearman": 0.24127401278148003,
+              "pearson": 0.25170603608121156,
+              "rmse": 0.6976363940468726,
+              "mae": 0.5407734085526406,
+              "n": 80
+            },
+            "k. pneumoniae": {
+              "spearman": 0.569462562036453,
+              "pearson": 0.6693453180181925,
+              "rmse": 0.5934403296509652,
+              "mae": 0.44851801756896337,
+              "n": 207
+            },
+            "p. aeruginosa": {
+              "spearman": 0.5176879153427497,
+              "pearson": 0.526724108413544,
+              "rmse": 0.6047396353911605,
+              "mae": 0.47305538407604747,
+              "n": 641
+            },
+            "s. aureus": {
+              "spearman": 0.4789967111654035,
+              "pearson": 0.5016362049275658,
+              "rmse": 0.6473846751916913,
+              "mae": 0.5066809666933109,
+              "n": 1036
+            },
+            "s. enterica": {
+              "spearman": 0.5092449275563433,
+              "pearson": 0.5923249377895587,
+              "rmse": 0.6789508836555261,
+              "mae": 0.5259722120982653,
+              "n": 231
+            }
+          }
+        },
+        "baseline": {
+          "overall": {
+            "spearman": 0.0,
+            "pearson": 0.0,
+            "rmse": 0.7289992747869115,
+            "mae": 0.5870589081844014,
+            "n": 4065
+          },
+          "per_group": {
+            "a. baumannii": {
+              "spearman": 0.0,
+              "pearson": 0.0,
+              "rmse": 0.5637399243841072,
+              "mae": 0.4576100244291333,
+              "n": 157
+            },
+            "b. subtilis": {
+              "spearman": 0.0,
+              "pearson": 0.0,
+              "rmse": 0.6668336233024299,
+              "mae": 0.5283111626582081,
+              "n": 338
+            },
+            "e. cloacae": {
+              "spearman": 0.0,
+              "pearson": 0.0,
+              "rmse": 0.6604654532868283,
+              "mae": 0.5393168475359887,
+              "n": 68
+            },
+            "e. coli": {
+              "spearman": 0.0,
+              "pearson": 0.0,
+              "rmse": 0.7432731867784544,
+              "mae": 0.6052058252269878,
+              "n": 1142
+            },
+            "e. faecalis": {
+              "spearman": 0.0,
+              "pearson": 0.0,
+              "rmse": 0.6862197656499935,
+              "mae": 0.5433515725229445,
+              "n": 165
+            },
+            "e. faecium": {
+              "spearman": 0.0,
+              "pearson": 0.0,
+              "rmse": 0.6643335846077371,
+              "mae": 0.5543652953841367,
+              "n": 80
+            },
+            "k. pneumoniae": {
+              "spearman": 0.0,
+              "pearson": 0.0,
+              "rmse": 0.7833707429476481,
+              "mae": 0.5861414210286602,
+              "n": 207
+            },
+            "p. aeruginosa": {
+              "spearman": 0.0,
+              "pearson": 0.0,
+              "rmse": 0.7013361626895449,
+              "mae": 0.5643373939649495,
+              "n": 641
+            },
+            "s. aureus": {
+              "spearman": 0.0,
+              "pearson": 0.0,
+              "rmse": 0.7177961314756953,
+              "mae": 0.580267411134535,
+              "n": 1036
+            },
+            "s. enterica": {
+              "spearman": 0.0,
+              "pearson": 0.0,
+              "rmse": 0.8034992612103773,
+              "mae": 0.6252538929069478,
+              "n": 231
+            }
+          }
+        },
+        "table": {
+          "endpoint": "MIC",
+          "split": "homology",
+          "mode": "separate",
+          "rows": [
+            {
+              "group": "a. baumannii",
+              "n": 157,
+              "spearman": 0.5287,
+              "pearson": 0.5531,
+              "rmse": 0.5192,
+              "mae": 0.4145
+            },
+            {
+              "group": "b. subtilis",
+              "n": 338,
+              "spearman": 0.5696,
+              "pearson": 0.5843,
+              "rmse": 0.5722,
+              "mae": 0.4336
+            },
+            {
+              "group": "e. cloacae",
+              "n": 68,
+              "spearman": 0.2773,
+              "pearson": 0.2834,
+              "rmse": 0.6679,
+              "mae": 0.5296
+            },
+            {
+              "group": "e. coli",
+              "n": 1142,
+              "spearman": 0.4428,
+              "pearson": 0.4509,
+              "rmse": 0.704,
+              "mae": 0.5417
+            },
+            {
+              "group": "e. faecalis",
+              "n": 165,
+              "spearman": 0.3312,
+              "pearson": 0.2991,
+              "rmse": 0.759,
+              "mae": 0.5652
+            },
+            {
+              "group": "e. faecium",
+              "n": 80,
+              "spearman": 0.2413,
+              "pearson": 0.2517,
+              "rmse": 0.6976,
+              "mae": 0.5408
+            },
+            {
+              "group": "k. pneumoniae",
+              "n": 207,
+              "spearman": 0.5695,
+              "pearson": 0.6693,
+              "rmse": 0.5934,
+              "mae": 0.4485
+            },
+            {
+              "group": "p. aeruginosa",
+              "n": 641,
+              "spearman": 0.5177,
+              "pearson": 0.5267,
+              "rmse": 0.6047,
+              "mae": 0.4731
+            },
+            {
+              "group": "s. aureus",
+              "n": 1036,
+              "spearman": 0.479,
+              "pearson": 0.5016,
+              "rmse": 0.6474,
+              "mae": 0.5067
+            },
+            {
+              "group": "s. enterica",
+              "n": 231,
+              "spearman": 0.5092,
+              "pearson": 0.5923,
+              "rmse": 0.679,
+              "mae": 0.526
+            },
+            {
+              "group": "overall",
+              "n": 4065,
+              "spearman": 0.4938,
+              "pearson": 0.5122,
+              "rmse": 0.6526,
+              "mae": 0.5031
+            },
+            {
+              "group": "mean-predictor",
+              "n": 4065,
+              "spearman": 0.0,
+              "pearson": 0.0,
+              "rmse": 0.729,
+              "mae": 0.5871
+            }
+          ]
+        },
+        "n_train": 36809,
+        "n_test": 4065
+      },
+      "hemo": {
+        "final": {
+          "overall": {
+            "spearman": 0.4210706029823062,
+            "pearson": 0.459022694528412,
+            "rmse": 0.7491211247579619,
+            "mae": 0.572066614001074,
+            "n": 391
+          },
+          "per_group": null
+        },
+        "baseline": {
+          "overall": {
+            "spearman": 0.0,
+            "pearson": 0.0,
+            "rmse": 0.7499054760313881,
+            "mae": 0.6002369397319641,
+            "n": 391
+          },
+          "per_group": null
+        },
+        "table": {
+          "endpoint": "HC50",
+          "split": "homology",
+          "mode": "separate",
+          "rows": [
+            {
+              "group": "overall",
+              "n": 391,
+              "spearman": 0.4211,
+              "pearson": 0.459,
+              "rmse": 0.7491,
+              "mae": 0.5721
+            },
+            {
+              "group": "mean-predictor",
+              "n": 391,
+              "spearman": 0.0,
+              "pearson": 0.0,
+              "rmse": 0.7499,
+              "mae": 0.6002
+            }
+          ]
+        },
+        "n_train": 4011,
+        "n_test": 391
+      }
+    }
+  }
+}
