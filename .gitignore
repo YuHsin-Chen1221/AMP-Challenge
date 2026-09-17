@@ -6,3 +6,6 @@ __pycache__/
 *.out
 library.fasta
 scores.csv
+generate/
+*.egg-info/
+.python-version

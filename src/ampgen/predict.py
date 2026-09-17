@@ -16,13 +16,12 @@ from pathlib import Path
 
 import torch
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "src"))
+ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "metrics"))
-from ampgen.predictor import SpeciesConditionedScorer, SPECIES, SPECIES_TO_ID  # noqa: E402
-from aggregate import aggregate_panel                                          # noqa: E402
+from .predictor import SpeciesConditionedScorer, SPECIES, SPECIES_TO_ID  # noqa: E402
+from .aggregate import aggregate_panel                                          # noqa: E402
 
-ENCODER = str(ROOT / "weights/generator")
+ENCODER = str(ROOT / "weights/predictor_encoder")
 MIC_CKPT = ROOT / "weights/predictor_mic.pt"
 HEMO_CKPT = ROOT / "weights/predictor_hemo.pt"
 
