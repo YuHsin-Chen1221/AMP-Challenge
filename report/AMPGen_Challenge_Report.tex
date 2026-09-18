@@ -53,6 +53,17 @@ encoder that scores each candidate for antibacterial activity (per-species MIC) 
   \item The generator and predictor weights, training data manifest, and this report.
 \end{itemize}
 
+\begin{figure}[h]\centering
+\includegraphics[width=\textwidth]{figures/pipeline.pdf}
+\caption{\textbf{AMPGen submission pipeline.} Stage 1 (activity-blind generation): the domain-adapted
+ESM2-35M masked-LM Gibbs sampler turns the AMP corpus into a constraint- and novelty-filtered
+50{,}000-sequence library. Stage 2 (scoring \& selection): the dual-endpoint predictor (frozen ESM2
+$+$ LoRA; 10-species AdaLN MIC head $+$ HC50 head) scores each candidate; panel aggregation maps
+species predictions to the 20-strain challenge panel (Success Rate / MIC50 / Safety Window); a
+safety-gated composite plus the strict Levenshtein novelty gate yields the ranked top-100. The whole
+pipeline is one reproducible command, \texttt{uv run generate}.}
+\end{figure}
+
 \section{Challenge task and scoring metrics}
 
 Submissions are scored by the organisers' \texttt{seqme} library against a fixed \textbf{20-strain
@@ -204,7 +215,7 @@ v4 & random   & 0.624 & 0.646 & 0.603 & 0.596 \\
 
 \begin{figure}[h]\centering
 \includegraphics[width=0.86\textwidth]{figures/predictor_performance.pdf}
-\caption{\textbf{Version progression v2 $\to$ v3 $\to$ v4, category-level \emph{honest} ranking.} Bars
+\caption{\label{fig:versions}\textbf{Version progression v2 $\to$ v3 $\to$ v4, category-level \emph{honest} ranking.} Bars
 are category-level Spearman $\rho$ on the honest (homology) split --- strain-weighted per-species MIC
 via the panel aggregation of \S\ref{sec:agg}, plus the HC50 safety endpoint --- coloured by version.
 Random-split numbers are omitted here (they are in Table~5). v2 is evaluated on its own
@@ -285,8 +296,8 @@ strains with MIC $\le 16$~\uM), \textbf{MIC50/MIC90} (strain-weighted percentile
 Optimal-Selectivity, \textbf{Safety Window} $=$ HC50\,/\,MIC50 --- all with the challenge ceilings
 (MIC 64~\uM, HC50 128~\uM) applied. Categories: Broad (all 20 strains), Gram$+$ (5), Gram$-$ (15),
 MDR (the 8-strain ESKAPE subset). The same category weighting yields the category-level ranking
-$\rho$ shown per split in Figure~1 (deployed v2 model) and used for the fair data ablation in
-Table~\ref{tab:ablation}.
+$\rho$ shown per version (v2--v4, honest split) in Figure~\ref{fig:versions} and used for the fair
+data ablation in Table~\ref{tab:ablation}.
 
 \begin{table}[h]\centering\small
 \caption{Fair data ablation, category-level Spearman $\rho$ on the \emph{identical} fixed v3 split
