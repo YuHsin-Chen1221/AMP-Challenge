@@ -100,8 +100,8 @@ generator corpus is the Stage-1 pretraining set.}
 \toprule
 \textbf{Asset} & \textbf{Sources (union)} & \textbf{Seqs} & \textbf{Meas.} & \textbf{Notes} \\
 \midrule
-Generator corpus & AMPSphere T1+T2 (physchem-matched) $+$ DRAMP $+$ DBAASP $+$ dbAMP $+$ APD &
-155{,}280 & --- & all-AMP MLM pretrain \\
+Generator corpus & AMPSphere T1+T2 (physchem-matched) $+$ DRAMP $+$ DBAASP $+$ dbAMP $+$ APD $+$
+7{,}059 activity-validated peptides & 162{,}339 & --- & all-AMP MLM pretrain \\
 MIC (10 species) & GRAMPA $+$ ampbench-v0.7 master $+$ AMPBench-MT & 13{,}123 & 40{,}874 &
 $\log_{10}$ \uM; 14 flags free-termini \\
 HC50 (human RBC) & ampbench master \texttt{hc50\_human} (DBAASP+HemoPI2+Hemolytik+QMAP+DRAMP)
@@ -136,7 +136,7 @@ low-data species 3--13$\times$.}
 
 \section{Stage-1 --- Generator}
 
-The generator is a domain-adaptive masked-LM pretrain of ESM2-35M on the 155{,}280-sequence all-AMP
+The generator is a domain-adaptive masked-LM pretrain of ESM2-35M on the 162{,}339-sequence all-AMP
 corpus (variable-rate span/scattered masking, $1/t$-reweighted cross-entropy, 3 epochs), used as a
 temperature-sampled mutation proposer. It is judged on whether its output is \emph{natural-like} on
 the axes that matter for AMPs (physicochemical marginals and an independent language-model
@@ -149,8 +149,8 @@ is from an independent ESM2-150M, distinct from the generator backbone.}
 \toprule
 \textbf{Metric} & \textbf{init} & \textbf{final} & \textbf{reference / comparator} \\
 \midrule
-Validation loss                         & 2.633 & 2.236 & --- \\
-Exact masked-token recovery             & 0.193 & 0.277 & chance 0.05 ($>3\times$) \\
+Validation loss                         & 2.684 & 2.194 & --- \\
+Exact masked-token recovery             & 0.213 & 0.297 & chance 0.05 ($>3\times$) \\
 Novelty, fraction $\le 80\%$ identity   & ---   & 100\% & challenge novelty gate \\
 Embedding diversity (mean pairwise cos-dist) & --- & 0.0977 & natural 0.1009 (matched) \\
 Pseudo-perplexity, median               & ---   & 17.12 & natural 17.01 (near-identical) \\
