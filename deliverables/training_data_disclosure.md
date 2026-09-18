@@ -6,14 +6,14 @@ non-public data was used. Three assets are built (all constraint-filtered and sp
 ## Data assets
 | Asset | Sequences | Measurements | Sources (union) |
 |---|---|---|---|
-| Generator corpus | 162,339 | — | AMPSphere v2022-03 T1+T2 (physchem-matched) + DRAMP + DBAASP + dbAMP + APD + 7,059 activity-validated peptides (from the MIC/HC50 sets below) |
+| Generator corpus | 162,339 | — | AMPSphere v2022-03 (physchem-matched) + DRAMP + DBAASP + dbAMP + APD + 7,059 activity-validated peptides (from the MIC/HC50 sets below) |
 | MIC (10 species) | 13,123 | 40,874 | GRAMPA + ampbench-v0.7 master (= DBAASP+QMAP+HemoPI2+Hemolytik+DRAMP) + AMPBench-MT |
 | HC50 (human RBC) | 4,402 | 4,402 | ampbench master `hc50_human` + Hemolytik2 + DRAMP free-text (14.2% right-censored) |
 
 ## Databases & terms
 | Source | Role | Public | Notes |
 |---|---|---|---|
-| AMPSphere v2022-03 | generator pretrain corpus | yes | CC-BY; T1/T2 quality tiers, physchem-matched to curated envelope |
+| AMPSphere v2022-03 | generator pretrain corpus | yes | CC-BY; physchem-matched to curated envelope |
 | DRAMP 3.0 | curated positives + MIC/HC50 text | yes | academic use |
 | DBAASP v3 | curated positives + MIC + hemolysis | yes | academic use (subsumed via ampbench master) |
 | dbAMP | curated positives | yes | academic use |
