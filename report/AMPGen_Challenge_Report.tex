@@ -174,13 +174,15 @@ measurements penalised one-sidedly). The two heads are trained as \textbf{separa
 (shared frozen encoder, own LoRA) --- multitask training gave no MIC gain and a clear HC50 loss
 (the small-task seesaw), so separate is the final configuration.
 
-\subsection{Version progression (v1 $\to$ v3)}
+\subsection{Version progression (v1 $\to$ v4)}
 
 \begin{table}[h]\centering\small
 \caption{Predictor performance across iterations, overall MIC and HC50 Spearman $\rho$ and Pearson
 $r$ on \emph{both} splits (homology $=$ honest, random $=$ leaky reference). v1 $=$ dual-endpoint
 baseline; v2 adds rare-species sampling rebalance and censoring-aware HC50 loss; v3 adds the
-AMPBench-MT data merge.}
+AMPBench-MT data merge; v4 adds conservative MIC de-noising (MIC head) and a listwise soft-Spearman
+ranking term (HC50 head). v3 and v4 share the same re-clustered honest test (so v4$-$v3 is the
+attributable gain); v4 lifts honest MIC $+0.026$ and HC50 $+0.060$ over v3.}
 \begin{tabular}{@{}llcccc@{}}
 \toprule
 \textbf{Ver} & \textbf{Split} & \textbf{MIC $\rho$} & \textbf{MIC $r$} & \textbf{HC50 $\rho$} & \textbf{HC50 $r$} \\
@@ -188,30 +190,34 @@ AMPBench-MT data merge.}
 v1 & homology & 0.578 & 0.592 & 0.456 & 0.478 \\
 v1 & random   & 0.645 & 0.645 & 0.597 & 0.624 \\
 \addlinespace[1pt]
-v2 & homology & \textbf{0.585} & \textbf{0.597} & \textbf{0.503} & \textbf{0.522} \\
+v2 & homology & 0.585 & 0.597 & 0.503 & 0.522 \\
 v2 & random   & 0.637 & 0.627 & 0.563 & 0.577 \\
 \addlinespace[1pt]
 v3 & homology & 0.494$^{\dagger}$ & 0.512$^{\dagger}$ & 0.421$^{\dagger}$ & 0.459$^{\dagger}$ \\
 v3 & random   & 0.619 & 0.639 & 0.592 & 0.604 \\
+\addlinespace[1pt]
+v4 & homology & \textbf{0.520}$^{\dagger}$ & \textbf{0.536}$^{\dagger}$ & \textbf{0.481}$^{\dagger}$ & \textbf{0.492}$^{\dagger}$ \\
+v4 & random   & 0.624 & 0.646 & 0.603 & 0.596 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{figure}[h]\centering
 \includegraphics[width=0.86\textwidth]{figures/predictor_performance.pdf}
-\caption{\textbf{Deployed v2 predictor, category-level ranking on both evaluation splits.} Bars are
-category-level Spearman $\rho$ (strain-weighted per-species MIC via the panel aggregation of
-\S\ref{sec:agg}) plus the HC50 safety endpoint, for the shipped v2 model. Blue = \emph{homology}
-split (CD-HIT-80\% whole-cluster; the honest, deployment-relevant number); purple = \emph{random}
-by-sequence split (the inflated, literature-comparable number). Grey $\Delta$ = random$-$homology,
-the honest penalty from removing near-duplicate leakage --- a modest, uniform $+0.05$ to $+0.08$
-across categories, i.e.\ the model is not merely memorising homologs. Both numbers are reported so no
-category score can be read without its honest reference.}
+\caption{\textbf{Version progression v2 $\to$ v3 $\to$ v4, category-level \emph{honest} ranking.} Bars
+are category-level Spearman $\rho$ on the honest (homology) split --- strain-weighted per-species MIC
+via the panel aggregation of \S\ref{sec:agg}, plus the HC50 safety endpoint --- coloured by version.
+Random-split numbers are omitted here (they are in Table~5). v2 is evaluated on its own
+pre-re-clustering split; v3 and v4 share the common, harder re-clustered honest test, so
+\textbf{v4 vs v3 is the apples-to-apples comparison}: v4 (data-clean MIC head $+$ soft-rank HC50 head)
+improves \emph{every} category over v3, most on HC50 ($+0.060$) and the resistance-relevant
+Gram$+$/MDR. v2's higher bars reflect its easier split, not a regression at v3 (see the $\dagger$ note).}
 \end{figure}
 
-$^{\dagger}$\,\textbf{The apparent v3 dip in Table~5 is a split artifact, not a regression.} The
-v1$\to$v3 rows are each on their \emph{own} CD-HIT split; adding 16{,}821 MIC rows re-clustered
-everything, so v3's honest test set differs from v2's and is harder. Proof: HC50's data is
+$^{\dagger}$\,\textbf{The apparent v3 dip in Table~5 is a split artifact, not a regression;} v3 and
+v4 are both on this harder re-clustered split. The v1$\to$v3 rows are each on their \emph{own} CD-HIT
+split; adding 16{,}821 MIC rows re-clustered everything, so v3's honest test set differs from v2's
+and is harder. Proof: HC50's data is
 \emph{unchanged} v2$\to$v3 yet its honest $\rho$ moved $0.503\!\to\!0.421$ ($-0.082$) purely from
 the re-split. To measure the data effect cleanly we ran a \textbf{controlled ablation on one fixed
 split} (Table~\ref{tab:ablation}): same held-out test, training data $\pm$AMPBench-MT. There the merge
@@ -224,7 +230,7 @@ the v2 configuration trained on the full merged corpus.
 \subsection{Per-species MIC (both splits)}
 
 \begin{table}[h]\centering\small
-\caption{Per-species MIC Spearman $\rho$ and Pearson $r$ for the recommended v2 model on \emph{both}
+\caption{Per-species MIC Spearman $\rho$ and Pearson $r$ for the v2-configuration model on \emph{both}
 splits (homology $=$ honest, random $=$ leaky reference). The low-$n$ Gram$+$ species
 (\spn{E.\,faecalis}, \spn{E.\,cloacae}, \spn{E.\,faecium}) carry wide confidence intervals and should
 be read as noisy estimates, not point values.}
@@ -300,15 +306,22 @@ $\Delta$ (B$-$A) & $+0.074$ & $+0.097$ & $+0.066$ & $+0.099$ & $-0.007$ \\
 
 \section{Decision and status}
 
-\textbf{Final predictor:} the v2 configuration (separate mode; species-rebalanced sampling +
-censoring-aware HC50 loss) trained on the \textbf{full merged corpus incl. AMPBench-MT}, and shipped
-as the deployment model. Three findings drive this: (i) the censoring-aware HC50 loss is a clear win
-($\rho$ $+0.047$); (ii) the controlled data ablation (Table~\ref{tab:ablation}) shows AMPBench-MT genuinely improves
-MIC ranking --- overall $+0.044$, rare species $+0.140$ --- concentrated in the MDR/Gram categories
-the challenge weights most; (iii) a physicochemical-feature branch was diagnosed out (incremental
-$r$ $+0.015$ MIC / $\sim\!0$ HC50 --- ESM2 already subsumes the descriptors). Reference honest
-metrics (held-out v2 run): MIC $\rho$ 0.585 / $r$ 0.597 (RMSE 0.65 $\log_{10}$\uM), HC50 $\rho$
-0.503 / $r$ 0.522.
+\textbf{Final predictor (v4):} the separate-mode configuration (species-rebalanced sampling +
+censoring-aware HC50 loss) trained on the \textbf{full merged corpus incl. AMPBench-MT}, with two v4
+levers chosen \emph{per endpoint} from a controlled 5-arm ablation on one fixed split: the MIC head
+uses \textbf{conservative de-noising} (drop cross-source contradictions $>3$ doubling dilutions), and
+the HC50 head adds a \textbf{listwise soft-Spearman ranking} term. Both were selected because
+stacking all levers interfered, whereas each endpoint's best single lever is a clean, attributable
+win. \textbf{Honest (homology-split) metrics: MIC $\rho$ 0.520 / $r$ 0.536, HC50 $\rho$ 0.481 /
+$r$ 0.492} --- $+0.026$ MIC and $+0.060$ HC50 over the v3 baseline on the identical test. Supporting
+findings: (i) the censoring-aware HC50 loss and the soft-rank term are both clear HC50 wins; (ii) the
+controlled data ablation (Table~\ref{tab:ablation}) shows AMPBench-MT improves MIC ranking (overall
+$+0.044$, rare species $+0.140$, concentrated in the MDR/Gram categories the challenge weights most);
+(iii) a physicochemical-feature branch was diagnosed out (incremental $r$ $+0.015$ MIC / $\sim\!0$
+HC50 --- ESM2 already subsumes the descriptors). A dataset-specific noise ceiling
+($r_{\max}=\sqrt{1-\sigma_e^2/\mathrm{Var}(y)}$, from cross-source measurement collisions) places
+these at MIC $\sim$0.79 within-cluster / 0.92 assay-oracle and HC50 $\sim$0.84 / 0.80--0.90, showing
+HC50 retains the larger headroom.
 
 \textbf{Submission status:} the fixed-seed (42) 50{,}000-sequence library and the novelty-gated
 top-100 (ranked by the aggregated selectivity score of \S\ref{sec:agg}) have been \textbf{generated
