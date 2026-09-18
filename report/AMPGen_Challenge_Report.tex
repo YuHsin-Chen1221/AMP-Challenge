@@ -177,17 +177,22 @@ measurements penalised one-sidedly). The two heads are trained as \textbf{separa
 \subsection{Version progression (v1 $\to$ v3)}
 
 \begin{table}[h]\centering\small
-\caption{Predictor performance across iterations, overall Spearman $\rho$ / Pearson $r$ on the honest
-(homology) split, plus the random-split $\rho$. v1 $=$ dual-endpoint baseline; v2 adds
-rare-species sampling rebalance and censoring-aware HC50 loss; v3 adds the AMPBench-MT data merge.}
+\caption{Predictor performance across iterations, overall MIC and HC50 Spearman $\rho$ and Pearson
+$r$ on \emph{both} splits (homology $=$ honest, random $=$ leaky reference). v1 $=$ dual-endpoint
+baseline; v2 adds rare-species sampling rebalance and censoring-aware HC50 loss; v3 adds the
+AMPBench-MT data merge.}
 \begin{tabular}{@{}llcccc@{}}
 \toprule
-\textbf{Ver} & \textbf{Change} & \textbf{MIC $\rho$/$r$ (hon)} & \textbf{HC50 $\rho$/$r$ (hon)}
- & \textbf{MIC $\rho$ (rand)} & \textbf{HC50 $\rho$ (rand)} \\
+\textbf{Ver} & \textbf{Split} & \textbf{MIC $\rho$} & \textbf{MIC $r$} & \textbf{HC50 $\rho$} & \textbf{HC50 $r$} \\
 \midrule
-v1 & dual-endpoint baseline & 0.578 / 0.592 & 0.456 / 0.478 & 0.645 & 0.597 \\
-v2 & $+$ rebalance $+$ censoring & \textbf{0.585 / 0.597} & \textbf{0.503 / 0.522} & 0.637 & 0.563 \\
-v3 & $+$ AMPBench-MT data & 0.494 / 0.512$^{\dagger}$ & 0.421 / 0.459$^{\dagger}$ & 0.619 & 0.592 \\
+v1 & homology & 0.578 & 0.592 & 0.456 & 0.478 \\
+v1 & random   & 0.645 & 0.645 & 0.597 & 0.624 \\
+\addlinespace[1pt]
+v2 & homology & \textbf{0.585} & \textbf{0.597} & \textbf{0.503} & \textbf{0.522} \\
+v2 & random   & 0.637 & 0.627 & 0.563 & 0.577 \\
+\addlinespace[1pt]
+v3 & homology & 0.494$^{\dagger}$ & 0.512$^{\dagger}$ & 0.421$^{\dagger}$ & 0.459$^{\dagger}$ \\
+v3 & random   & 0.619 & 0.639 & 0.592 & 0.604 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -209,7 +214,7 @@ v1$\to$v3 rows are each on their \emph{own} CD-HIT split; adding 16{,}821 MIC ro
 everything, so v3's honest test set differs from v2's and is harder. Proof: HC50's data is
 \emph{unchanged} v2$\to$v3 yet its honest $\rho$ moved $0.503\!\to\!0.421$ ($-0.082$) purely from
 the re-split. To measure the data effect cleanly we ran a \textbf{controlled ablation on one fixed
-split} (Table~6): same held-out test, training data $\pm$AMPBench-MT. There the merge
+split} (Table~\ref{tab:ablation}): same held-out test, training data $\pm$AMPBench-MT. There the merge
 \textbf{improves overall MIC $\rho$ 0.450$\to$0.494 ($+0.044$)} and the rare species by
 $+0.140$ (strain-weighted) --- \spn{A.\,baumannii} $+0.30$, \spn{E.\,faecium} $+0.25$,
 \spn{K.\,pneumoniae} $+0.11$ --- with the big-3 flat ($+0.004$). So the AMPBench-MT data
@@ -219,23 +224,27 @@ the v2 configuration trained on the full merged corpus.
 \subsection{Per-species MIC (both splits)}
 
 \begin{table}[h]\centering\small
-\caption{MIC Spearman $\rho$ per panel species for the recommended v2 model on \emph{both} splits
-(homology = honest, random = leaky reference), with each split's test size. Low-$n$ species carry
-wide confidence intervals; the homology/random gap is the honest penalty.}
-\begin{tabular}{@{}lrrrr@{}}
+\caption{Per-species MIC Spearman $\rho$ and Pearson $r$ for the recommended v2 model on \emph{both}
+splits (homology $=$ honest, random $=$ leaky reference). The low-$n$ Gram$+$ species
+(\spn{E.\,faecalis}, \spn{E.\,cloacae}, \spn{E.\,faecium}) carry wide confidence intervals and should
+be read as noisy estimates, not point values.}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lcclcc@{}}
 \toprule
-\textbf{Species} & \textbf{$\rho$ (hom)} & \textbf{$n$ (hom)} & \textbf{$\rho$ (rand)} & \textbf{$n$ (rand)} \\
+& \multicolumn{2}{c}{\textbf{homology (honest)}} & & \multicolumn{2}{c}{\textbf{random}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){5-6}
+\textbf{Species} & $\rho$ & $r$ & & $\rho$ & $r$ \\
 \midrule
-\spn{E. coli}       & 0.598 & 937 & 0.653 & 865 \\
-\spn{S. aureus}     & 0.550 & 774 & 0.606 & 721 \\
-\spn{P. aeruginosa} & 0.631 & 620 & 0.655 & 507 \\
-\spn{B. subtilis}   & 0.546 & 90  & 0.591 & 90  \\
-\spn{S. enterica}   & 0.578 & 48  & 0.675 & 68  \\
-\spn{K. pneumoniae} & 0.590 & 47  & 0.655 & 49  \\
-\spn{E. faecalis}   & 0.255 & 39  & 0.504 & 45  \\
-\spn{E. cloacae}    & 0.356 & 25  & 0.463 & 22  \\
-\spn{E. faecium}    & 0.469 & 19  & 0.460 & 23  \\
-\spn{A. baumannii}  & 0.681 & 13  & 0.612 & 21  \\
+\spn{E. coli}       & 0.598 & 0.605 & & 0.653 & 0.647 \\
+\spn{S. aureus}     & 0.550 & 0.551 & & 0.606 & 0.606 \\
+\spn{P. aeruginosa} & 0.631 & 0.638 & & 0.655 & 0.658 \\
+\spn{B. subtilis}   & 0.546 & 0.571 & & 0.591 & 0.569 \\
+\spn{S. enterica}   & 0.578 & 0.722 & & 0.675 & 0.699 \\
+\spn{K. pneumoniae} & 0.590 & 0.751 & & 0.655 & 0.686 \\
+\spn{E. faecalis}   & 0.255 & 0.411 & & 0.504 & 0.444 \\
+\spn{E. cloacae}    & 0.356 & 0.514 & & 0.463 & 0.565 \\
+\spn{E. faecium}    & 0.469 & 0.516 & & 0.460 & 0.456 \\
+\spn{A. baumannii}  & 0.681 & 0.651 & & 0.612 & 0.647 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -271,12 +280,13 @@ Optimal-Selectivity, \textbf{Safety Window} $=$ HC50\,/\,MIC50 --- all with the 
 (MIC 64~\uM, HC50 128~\uM) applied. Categories: Broad (all 20 strains), Gram$+$ (5), Gram$-$ (15),
 MDR (the 8-strain ESKAPE subset). The same category weighting yields the category-level ranking
 $\rho$ shown per split in Figure~1 (deployed v2 model) and used for the fair data ablation in
-Table~6.
+Table~\ref{tab:ablation}.
 
 \begin{table}[h]\centering\small
 \caption{Fair data ablation, category-level Spearman $\rho$ on the \emph{identical} fixed v3 split
 (same test; only training data differs). Adding AMPBench-MT lifts every MIC category, most on the
 resistance-relevant MDR and Gram$+$; HC50 is unchanged (its data is identical in both arms).}
+\label{tab:ablation}
 \begin{tabular}{@{}lccccc@{}}
 \toprule
 \textbf{Training data} & \textbf{Broad} & \textbf{Gram$+$} & \textbf{Gram$-$} & \textbf{MDR} & \textbf{HC50} \\
@@ -293,15 +303,17 @@ $\Delta$ (B$-$A) & $+0.074$ & $+0.097$ & $+0.066$ & $+0.099$ & $-0.007$ \\
 \textbf{Final predictor:} the v2 configuration (separate mode; species-rebalanced sampling +
 censoring-aware HC50 loss) trained on the \textbf{full merged corpus incl. AMPBench-MT}, and shipped
 as the deployment model. Three findings drive this: (i) the censoring-aware HC50 loss is a clear win
-($\rho$ $+0.047$); (ii) the controlled data ablation (Table~6) shows AMPBench-MT genuinely improves
+($\rho$ $+0.047$); (ii) the controlled data ablation (Table~\ref{tab:ablation}) shows AMPBench-MT genuinely improves
 MIC ranking --- overall $+0.044$, rare species $+0.140$ --- concentrated in the MDR/Gram categories
 the challenge weights most; (iii) a physicochemical-feature branch was diagnosed out (incremental
 $r$ $+0.015$ MIC / $\sim\!0$ HC50 --- ESM2 already subsumes the descriptors). Reference honest
 metrics (held-out v2 run): MIC $\rho$ 0.585 / $r$ 0.597 (RMSE 0.65 $\log_{10}$\uM), HC50 $\rho$
 0.503 / $r$ 0.522.
 
-\textbf{Remaining work toward submission:} the fixed-seed 50{,}000 generation run (constraints as a
-generation gate), the top-100 selection under the novelty gate (ranked by the aggregated
-selectivity score of \S\ref{sec:agg}), and a \texttt{seqme} scoring mirror for local validation.
+\textbf{Submission status:} the fixed-seed (42) 50{,}000-sequence library and the novelty-gated
+top-100 (ranked by the aggregated selectivity score of \S\ref{sec:agg}) have been \textbf{generated
+and pass all local challenge checks} --- 50{,}000 valid unique sequences, no exact match to the
+reference set, and every top-100 entry at Levenshtein ratio $\le 0.80$ to any reference. Remaining:
+upload to the competition and a \texttt{seqme} scoring mirror for local validation.
 
 \end{document}
