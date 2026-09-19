@@ -18,8 +18,8 @@ An activity-blind ESM2 generator paired with a dual-endpoint (MIC + HC50) predic
 
 ## Submission Track
 
-**Benchmark participation (Minimum).**
-The submission also meets the *technical* Full-track requirements — MIT license, `uv` + `uv.lock`, pinned Python 3.11, fixed default seed (42), and a verified `uv run generate` entry point. To convert to the **Full (co-authorship) track**, the only remaining steps are (1) make the GitHub repository public and (2) grant read access to @RasmusML and @szymczakpau.
+**Full (co-authorship eligible).**
+The submission repository is **public** with model weights, inference code, and usage docs, under an MIT license, using `uv` + `uv.lock` and a pinned Python 3.11, with a fixed default seed (42) and a verified `uv run generate` entry point that reproduces the library and top-100. All reviewer-needed artifacts (weights + inference code + report) are in the public repository.
 
 ---
 
@@ -78,10 +78,10 @@ Each endpoint is predicted separately (10-species MIC + HC50), then panel-aggreg
 
 ## Project Links
 
-- **Submission repository (self-contained, `uv run generate`):** https://github.com/YuHsin-Chen1221/AMP-Challenge
-- **Method / training repository (paper):** https://github.com/YuHsin-Chen1221/AMPGen
+- **Submission repository (public, self-contained, `uv run generate`):** https://github.com/YuHsin-Chen1221/AMP-Challenge
+- **Method / training repository (paper, private):** https://github.com/YuHsin-Chen1221/AMPGen
 
-> Both are currently **private**. For the Minimum track, grant read access to **@RasmusML** and **@szymczakpau**; for the Full track, make the submission repository **public**.
+> The submission repository is public and contains everything needed to reproduce and verify the submission (weights, inference code, report, deliverables). The method/paper repository is kept private (unpublished manuscript) and is supplementary — it is not required for review.
 
 ---
 
