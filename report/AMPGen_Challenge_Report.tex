@@ -105,18 +105,19 @@ All three data assets are unions of curated public databases, de-duplicated and 
 identical to any training sequence).
 
 \begin{table}[h]\centering\small
+\setlength{\tabcolsep}{4pt}
 \caption{Data assets behind the submission. MIC and HC50 feed the two predictor endpoints; the
 generator corpus is the Stage-1 pretraining set.}
-\begin{tabular}{@{}p{2.4cm}p{6.8cm}rrp{2.4cm}@{}}
+\begin{tabular}{@{}p{2.1cm}p{6.6cm}rrp{2.3cm}@{}}
 \toprule
 \textbf{Asset} & \textbf{Sources (union)} & \textbf{Seqs} & \textbf{Meas.} & \textbf{Notes} \\
 \midrule
 Generator corpus & AMPSphere (physchem-matched) $+$ DRAMP $+$ DBAASP $+$ dbAMP $+$ APD $+$
 7{,}059 activity-validated peptides & 162{,}339 & --- & all-AMP MLM pretrain \\
 MIC (10 species) & GRAMPA $+$ ampbench-v0.7 master $+$ AMPBench-MT & 13{,}123 & 40{,}874 &
-$\log_{10}$ \uM; 14 flags free-termini \\
-HC50 (human RBC) & ampbench master \texttt{hc50\_human} (DBAASP+HemoPI2+Hemolytik+QMAP+DRAMP)
-$+$ Hemolytik2 $+$ DRAMP text & 4{,}402 & 4{,}402 & 14.2\% right-censored \\
+$\log_{10}$ \uM; free-termini flags \\
+HC50 (human RBC) & ampbench master \texttt{hc50\_human} (DBAASP, HemoPI2, Hemolytik, QMAP,
+DRAMP) $+$ Hemolytik2 $+$ DRAMP text & 4{,}402 & 4{,}402 & 14.2\% right-censored \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -156,7 +157,8 @@ naturalness score), not on exact-residue recovery.
 \begin{table}[h]\centering\small
 \caption{Generator (Stage-1) held-out metrics. Reference = held-out natural AMPs; pseudo-perplexity
 is from an independent ESM2-150M, distinct from the generator backbone.}
-\begin{tabular}{@{}lrrl@{}}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}p{5.6cm}rrp{4.2cm}@{}}
 \toprule
 \textbf{Metric} & \textbf{init} & \textbf{final} & \textbf{reference / comparator} \\
 \midrule
@@ -165,7 +167,7 @@ Exact masked-token recovery             & 0.213 & 0.297 & chance 0.05 ($>3\times
 Novelty, fraction $\le 80\%$ identity   & ---   & 100\% & challenge novelty gate \\
 Embedding diversity (mean pairwise cos-dist) & --- & 0.0977 & natural 0.1009 (matched) \\
 Pseudo-perplexity, median               & ---   & 17.12 & natural 17.01 (near-identical) \\
-Wasserstein: len / charge / GRAVY / $\mu$H / hydrophobic & --- & \multicolumn{2}{l}{0.000 / 0.099 / 0.014 / 0.005 / 0.002 (lower $=$ closer)} \\
+Wasserstein (len, charge, GRAVY, $\mu$H, hydrophob.) & --- & \multicolumn{2}{p{5.2cm}}{0.000 / 0.099 / 0.014 / 0.005 / 0.002 (lower $=$ closer)} \\
 \bottomrule
 \end{tabular}
 \end{table}
