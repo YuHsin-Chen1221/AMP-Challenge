@@ -62,7 +62,17 @@ Fixed default seed 42; identical output on repeated runs. A CUDA GPU is used whe
 
 ## Project Description
 
-AMPGen is a reproducible two-stage generative pipeline for antimicrobial-peptide design: an activity-blind ESM2-35M masked-LM Gibbs generator produces a novel, constraint-valid 50,000-sequence library, and a dual-endpoint predictor (10-species MIC + human-RBC HC50, on a shared frozen ESM2 encoder with LoRA) scores and ranks it via panel aggregation and a safety-gated composite to select the top-100. Honest, leak-free (CD-HIT-80%) performance: MIC Spearman ρ 0.520, HC50 ρ 0.481, reported against a self-computed dataset-specific noise ceiling. Fully reproducible with `uv run generate` (seed 42).
+### Abstract
+
+AMPGen is a reproducible two-stage generative pipeline for antimicrobial-peptide design. Stage 1 is an *activity-blind* generator — ESM2-35M domain-adapted to the full AMP corpus and used as a masked-LM Gibbs sampler — that proposes novel, constraint-valid peptides for the 50,000-member library. Stage 2 is a dual-endpoint predictor on the same frozen ESM2 encoder (LoRA adapter): a 10-species MIC head with species AdaLN conditioning and a human-RBC HC50 head. Per-endpoint predictions are aggregated over the 20-strain panel and combined into a single safety-gated composite that ranks the library to the top-100. Honest, leak-free (CD-HIT-80%) performance is MIC Spearman ρ 0.520 and HC50 ρ 0.481, reported against a self-computed dataset-specific noise ceiling. The whole submission reproduces from `uv run generate` (seed 42).
+
+### Data description
+
+All training data is public/academic (no proprietary data). **Generator corpus** (162,339 sequences): AMPSphere + DRAMP + DBAASP + dbAMP + APD + 7,059 activity-validated peptides. **MIC** (13,123 sequences / 40,874 measurements, 10 species): GRAMPA + ampbench-v0.7 master + AMPBench-MT. **HC50** (4,402 sequences, human RBC): ampbench master `hc50_human` + Hemolytik2 + DRAMP. *Computational filters:* 20 standard amino acids, length 8–50, linear with free termini, no chemical modifications, exact-dedup; MIC harmonized to log₁₀ µM (AMPBench-MT pMIC → 6 − pMIC), per-(sequence, species) median; conservative de-noising drops (sequence, species) pairs whose cross-source measurements disagree by > 3 doubling dilutions; leak-free CD-HIT-80% whole-cluster train/test split. *Manual intervention:* none — all curation is programmatic and reproducible from the repository scripts. *Licensing note:* AMPBench-MT carries a non-commercial research license and can be dropped for a strictly-permissive release.
+
+### Top candidates selection procedure (for Wet-Lab Track only)
+
+Each endpoint is predicted separately (10-species MIC + HC50), then panel-aggregated per category into Success Rate (fraction of strains with MIC ≤ 16 µM), MIC50/MIC90, and Safety Window (HC50/MIC50). Candidates are ranked by a single composite = standardized category Success Rate + standardized log Safety Window, **hard-gated** so any peptide with Safety Window < 1 is excluded (no potent-but-hemolytic hits). Walking the ranking, a candidate is kept only if its Levenshtein ratio ≤ 0.80 to every reference antibacterial peptide; the first 100 form the list. Per wet-lab category, the potency term is swapped for that category's Success Rate — **Broad-Spectrum** (all 20 strains), **Gram-Positive** (5), **Gram-Negative** (15), **MDR ESKAPE** (8-strain subset) — while **Optimal Selectivity** is driven by the Safety-Window term and gate. Our submitted list uses a broad-spectrum + selectivity general composite.
 
 ---
 
